@@ -1,0 +1,36 @@
+<Window x:Class="SnookerPoint.App.Views.Dialogs.OpenShiftDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Open Shift"
+        FontFamily="{StaticResource Font.Ui}"
+        Width="420" SizeToContent="Height"
+        ResizeMode="NoResize" WindowStyle="SingleBorderWindow"
+        WindowStartupLocation="CenterOwner"
+        Background="{DynamicResource Brush.Background}">
+    <Border Background="{DynamicResource Brush.Surface}" Padding="24">
+        <StackPanel>
+            <TextBlock Text="Open Shift" Style="{StaticResource Text.Heading}" />
+            <TextBlock Text="Enter the cash in the drawer at the start of your shift."
+                       Style="{StaticResource Text.Body}" Margin="0,6,0,18" />
+
+            <TextBlock Text="Opening cash (Rs)" Style="{StaticResource Text.Caption}" Margin="0,0,0,4" />
+            <TextBox x:Name="AmountBox" Text="{Binding OpeningCashText, UpdateSourceTrigger=PropertyChanged}"
+                     Padding="8,7" FontSize="14" />
+
+            <TextBlock Text="Note (optional)" Style="{StaticResource Text.Caption}" Margin="0,14,0,4" />
+            <TextBox Text="{Binding Note, UpdateSourceTrigger=PropertyChanged}"
+                     Padding="8,7" FontSize="14" TextWrapping="Wrap" MinLines="2" />
+
+            <TextBlock Text="{Binding ErrorMessage}"
+                       Foreground="{DynamicResource Brush.Danger}"
+                       TextWrapping="Wrap" Margin="0,14,0,0"
+                       Visibility="{Binding ErrorMessage, Converter={StaticResource NullToCollapsed}}" />
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,22,0,0">
+                <Button Content="Cancel" IsCancel="True" Style="{StaticResource Button.Secondary}" Margin="0,0,10,0" />
+                <Button Content="Open Shift" IsDefault="True" Click="OnConfirm"
+                        Style="{StaticResource Button.Primary}" />
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</Window>

@@ -1,0 +1,30 @@
+<Window x:Class="SnookerPoint.App.Views.Dialogs.RecoveryCodeDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Recovery code"
+        FontFamily="{StaticResource Font.Ui}"
+        Width="460" SizeToContent="Height"
+        ResizeMode="NoResize" WindowStyle="SingleBorderWindow"
+        WindowStartupLocation="CenterOwner"
+        Background="{DynamicResource Brush.Background}">
+    <Border Background="{DynamicResource Brush.Surface}" Padding="24">
+        <StackPanel>
+            <TextBlock Text="Your recovery code" Style="{StaticResource Text.Heading}" />
+            <TextBlock TextWrapping="Wrap" Style="{StaticResource Text.Body}" Margin="0,6,0,16"
+                       Text="Write this down and keep it somewhere safe. It is shown only once and is the only way to recover the Owner account offline." />
+
+            <Border Background="{DynamicResource Brush.Card}" BorderBrush="{DynamicResource Brush.Border}" BorderThickness="1"
+                    CornerRadius="10" Padding="16,14">
+                <TextBlock x:Name="CodeText" Text="{Binding}" FontFamily="Consolas" FontSize="20" FontWeight="Bold"
+                           Foreground="{DynamicResource Brush.Accent}" HorizontalAlignment="Center" TextAlignment="Center" />
+            </Border>
+
+            <StackPanel Orientation="Horizontal" Margin="0,16,0,0">
+                <Button Content="Copy" Click="OnCopy" Style="{StaticResource Button.Secondary}" Margin="0,0,10,0" />
+                <Button Content="Print" Click="OnPrint" Style="{StaticResource Button.Secondary}" />
+                <Button Content="I've saved it" IsDefault="True" IsCancel="True" Style="{StaticResource Button.Primary}"
+                        HorizontalAlignment="Right" Margin="10,0,0,0" />
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</Window>

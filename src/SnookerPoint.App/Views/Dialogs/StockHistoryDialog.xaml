@@ -1,0 +1,42 @@
+<Window x:Class="SnookerPoint.App.Views.Dialogs.StockHistoryDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Stock history"
+        FontFamily="{StaticResource Font.Ui}"
+        Width="720" Height="560"
+        ResizeMode="CanResize" WindowStyle="SingleBorderWindow"
+        WindowStartupLocation="CenterOwner"
+        Background="{DynamicResource Brush.Background}">
+    <Border Background="{DynamicResource Brush.Surface}" Padding="24">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Text="{Binding ProductName}" Style="{StaticResource Text.Heading}" Margin="0,0,0,12" />
+
+            <TextBlock Grid.Row="1" Text="No stock movements yet." Style="{StaticResource Text.Body}"
+                       Visibility="{Binding IsEmpty, Converter={StaticResource BoolToVisible}}" />
+
+            <DataGrid Grid.Row="1" ItemsSource="{Binding Rows}" AutoGenerateColumns="False" IsReadOnly="True"
+                      HeadersVisibility="Column" GridLinesVisibility="Horizontal" Background="Transparent"
+                      RowBackground="Transparent" BorderBrush="{DynamicResource Brush.Border}" BorderThickness="1"
+                      Foreground="{DynamicResource Brush.Text}"
+                      Visibility="{Binding IsEmpty, Converter={StaticResource InverseBoolToVisible}}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="When" Binding="{Binding When}" Width="180" />
+                    <DataGridTextColumn Header="Type" Binding="{Binding Type}" Width="130" />
+                    <DataGridTextColumn Header="Change" Binding="{Binding Change}" Width="80" />
+                    <DataGridTextColumn Header="Balance" Binding="{Binding Balance}" Width="110" />
+                    <DataGridTextColumn Header="Reason" Binding="{Binding Reason}" Width="*" />
+                    <DataGridTextColumn Header="User" Binding="{Binding User}" Width="120" />
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <Button Grid.Row="2" Content="Close" IsCancel="True" IsDefault="True" Style="{StaticResource Button.Primary}"
+                    HorizontalAlignment="Right" Margin="0,16,0,0" />
+        </Grid>
+    </Border>
+</Window>

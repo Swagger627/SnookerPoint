@@ -1,0 +1,47 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--
+        Dark theme colour tokens — neutral, premium, minimal.
+        Charcoal background, graphite surfaces, soft-white text, a single cool
+        indigo accent, and muted semantic colours. Screens bind only to these
+        semantic keys, so the palette can be re-branded later with no screen edits.
+    -->
+
+    <!-- Surfaces -->
+    <SolidColorBrush x:Key="Brush.Background"   Color="#0D0E11" />
+    <SolidColorBrush x:Key="Brush.Surface"      Color="#15171C" />
+    <SolidColorBrush x:Key="Brush.Card"         Color="#1A1D23" />
+    <SolidColorBrush x:Key="Brush.CardHover"    Color="#21252D" />
+    <SolidColorBrush x:Key="Brush.Border"       Color="#2A2E37" />
+    <SolidColorBrush x:Key="Brush.BorderStrong" Color="#3A3F4B" />
+
+    <!-- Text -->
+    <SolidColorBrush x:Key="Brush.Text"         Color="#ECEEF2" />
+    <SolidColorBrush x:Key="Brush.TextMuted"    Color="#9BA1AE" />
+    <SolidColorBrush x:Key="Brush.TextSubtle"   Color="#6C727E" />
+
+    <!-- Accent (single cool indigo, used sparingly) -->
+    <SolidColorBrush x:Key="Brush.Primary"        Color="#5E6AD2" />
+    <SolidColorBrush x:Key="Brush.PrimaryHover"   Color="#6E79E0" />
+    <SolidColorBrush x:Key="Brush.PrimaryPressed" Color="#4E58B8" />
+    <SolidColorBrush x:Key="Brush.OnPrimary"      Color="#FFFFFF" />
+    <SolidColorBrush x:Key="Brush.Accent"         Color="#5E6AD2" />
+    <!-- Faint accent tint for subtle highlights / focus rings -->
+    <SolidColorBrush x:Key="Brush.AccentSubtle"   Color="#232637" />
+
+    <!-- Semantic (muted, not flashy) -->
+    <SolidColorBrush x:Key="Brush.Success" Color="#3FB27F" />
+    <SolidColorBrush x:Key="Brush.Warning" Color="#E0A73E" />
+    <SolidColorBrush x:Key="Brush.Danger"  Color="#E5645C" />
+
+    <!-- Table status tokens (for later phases; colour always paired with a label) -->
+    <SolidColorBrush x:Key="Brush.Status.Available"       Color="#3FB27F" />
+    <SolidColorBrush x:Key="Brush.Status.Reserved"        Color="#5E6AD2" />
+    <SolidColorBrush x:Key="Brush.Status.Running"         Color="#E0A73E" />
+    <SolidColorBrush x:Key="Brush.Status.Paused"          Color="#6C727E" />
+    <SolidColorBrush x:Key="Brush.Status.AwaitingPayment" Color="#E5645C" />
+    <SolidColorBrush x:Key="Brush.Status.Cleaning"        Color="#3BA7B5" />
+    <SolidColorBrush x:Key="Brush.Status.Maintenance"     Color="#7A5C4B" />
+
+</ResourceDictionary>

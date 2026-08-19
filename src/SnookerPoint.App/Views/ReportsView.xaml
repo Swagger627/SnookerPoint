@@ -1,0 +1,122 @@
+<UserControl x:Class="SnookerPoint.App.Views.ReportsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ctrl="clr-namespace:SnookerPoint.App.Controls"
+             Background="{DynamicResource Brush.Background}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Top bar -->
+        <Border Grid.Row="0" Height="64" Background="{DynamicResource Brush.Surface}"
+                BorderBrush="{DynamicResource Brush.Border}" BorderThickness="0,0,0,1">
+            <Grid Margin="20,0">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="Reports" Style="{StaticResource Text.Heading}" VerticalAlignment="Center" />
+                    <TextBlock Text="{Binding RangeText}" Style="{StaticResource Text.Caption}" VerticalAlignment="Center" Margin="14,0,0,0" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <StackPanel Margin="0,0,16,0" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding UserDisplayName}" Foreground="{DynamicResource Brush.Text}" FontWeight="SemiBold" HorizontalAlignment="Right" />
+                        <TextBlock Text="{Binding RoleName}" Style="{StaticResource Text.Caption}" HorizontalAlignment="Right" />
+                    </StackPanel>
+                    <Button Content="Export CSV" Command="{Binding ExportCommand}" Style="{StaticResource Button.Secondary}" Margin="0,0,8,0"
+                            Visibility="{Binding CanExport, Converter={StaticResource BoolToVisible}}" />
+                    <Button Content="Exports folder" Command="{Binding OpenExportsFolderCommand}" Style="{StaticResource Button.Secondary}" Margin="0,0,8,0" />
+                    <Button Content="Theme" Command="{Binding ToggleThemeCommand}" Style="{StaticResource Button.Secondary}" Margin="0,0,8,0" />
+                    <Button Content="Home" Command="{Binding HomeCommand}" Style="{StaticResource Button.Secondary}" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Date filter + section tabs -->
+        <StackPanel Grid.Row="1" Margin="28,16,28,0">
+            <WrapPanel>
+                <ComboBox Width="150" Padding="8,7" VerticalAlignment="Center" Margin="0,0,10,10"
+                          ItemsSource="{Binding Presets}" SelectedItem="{Binding SelectedPreset}" DisplayMemberPath="Label" />
+                <DatePicker Width="140" VerticalAlignment="Center" Margin="0,0,10,10"
+                            SelectedDate="{Binding CustomFrom}" Visibility="{Binding IsCustom, Converter={StaticResource BoolToVisible}}" />
+                <DatePicker Width="140" VerticalAlignment="Center" Margin="0,0,10,10"
+                            SelectedDate="{Binding CustomTo}" Visibility="{Binding IsCustom, Converter={StaticResource BoolToVisible}}" />
+                <Button Content="Refresh" Command="{Binding ReloadCommand}" Style="{StaticResource Button.Secondary}" Margin="0,0,8,10" />
+                <Button Content="Reset filters" Command="{Binding ResetFiltersCommand}" Style="{StaticResource Button.Secondary}" Margin="0,0,0,10" />
+            </WrapPanel>
+
+            <!-- Sales filters (visible on the Sales report) -->
+            <WrapPanel Margin="0,0,0,0" Visibility="{Binding IsSalesSection, Converter={StaticResource BoolToVisible}}">
+                <ComboBox Width="170" Padding="8,7" VerticalAlignment="Center" Margin="0,0,10,10" ToolTip="Cashier"
+                          ItemsSource="{Binding Cashiers}" SelectedItem="{Binding SelectedCashier}" DisplayMemberPath="Name" />
+                <ComboBox Width="130" Padding="8,7" VerticalAlignment="Center" Margin="0,0,10,10" ToolTip="Sale type"
+                          ItemsSource="{Binding SaleTypes}" SelectedItem="{Binding SelectedSaleType}" DisplayMemberPath="Label" />
+                <ComboBox Width="160" Padding="8,7" VerticalAlignment="Center" Margin="0,0,10,10" ToolTip="Payment method"
+                          ItemsSource="{Binding Methods}" SelectedItem="{Binding SelectedMethod}" DisplayMemberPath="Name" />
+                <ComboBox Width="150" Padding="8,7" VerticalAlignment="Center" Margin="0,0,10,10" ToolTip="Table"
+                          ItemsSource="{Binding SalesTables}" SelectedItem="{Binding SelectedSalesTable}" DisplayMemberPath="Name" />
+                <ComboBox Width="150" Padding="8,7" VerticalAlignment="Center" Margin="0,0,10,10" ToolTip="Status"
+                          ItemsSource="{Binding SaleStatuses}" SelectedItem="{Binding SelectedSaleStatus}" DisplayMemberPath="Label" />
+            </WrapPanel>
+
+            <!-- Inventory filters (visible on the Inventory report) -->
+            <WrapPanel Margin="0,0,0,0" Visibility="{Binding IsInventorySection, Converter={StaticResource BoolToVisible}}">
+                <CheckBox Content="Stock-movement history" IsChecked="{Binding ShowMovements}" Foreground="{DynamicResource Brush.Text}"
+                          VerticalAlignment="Center" Margin="0,0,16,10" />
+                <ComboBox Width="170" Padding="8,7" VerticalAlignment="Center" Margin="0,0,10,10" ToolTip="Product"
+                          Visibility="{Binding IsInventoryMovements, Converter={StaticResource BoolToVisible}}"
+                          ItemsSource="{Binding Products}" SelectedItem="{Binding SelectedProduct}" DisplayMemberPath="Name" />
+                <ComboBox Width="160" Padding="8,7" VerticalAlignment="Center" Margin="0,0,10,10" ToolTip="Category"
+                          Visibility="{Binding IsInventoryMovements, Converter={StaticResource BoolToVisible}}"
+                          ItemsSource="{Binding Categories}" SelectedItem="{Binding SelectedCategory}" DisplayMemberPath="Name" />
+                <ComboBox Width="180" Padding="8,7" VerticalAlignment="Center" Margin="0,0,10,10" ToolTip="Movement type"
+                          Visibility="{Binding IsInventoryMovements, Converter={StaticResource BoolToVisible}}"
+                          ItemsSource="{Binding MovementTypes}" SelectedItem="{Binding SelectedMovementType}" DisplayMemberPath="Label" />
+                <ComboBox Width="160" Padding="8,7" VerticalAlignment="Center" Margin="0,0,10,10" ToolTip="User"
+                          Visibility="{Binding IsInventoryMovements, Converter={StaticResource BoolToVisible}}"
+                          ItemsSource="{Binding Users}" SelectedItem="{Binding SelectedUser}" DisplayMemberPath="Name" />
+            </WrapPanel>
+            <WrapPanel Margin="0,4,0,0">
+                <Button Content="Dashboard" Command="{Binding ShowCommand}" CommandParameter="Dashboard" Style="{StaticResource Button.Secondary}" Margin="0,0,6,6" />
+                <Button Content="Sales" Command="{Binding ShowCommand}" CommandParameter="Sales" Style="{StaticResource Button.Secondary}" Margin="0,0,6,6" />
+                <Button Content="Payments" Command="{Binding ShowCommand}" CommandParameter="Payments" Style="{StaticResource Button.Secondary}" Margin="0,0,6,6" />
+                <Button Content="Tables" Command="{Binding ShowCommand}" CommandParameter="Tables" Style="{StaticResource Button.Secondary}" Margin="0,0,6,6" />
+                <Button Content="Products" Command="{Binding ShowCommand}" CommandParameter="Products" Style="{StaticResource Button.Secondary}" Margin="0,0,6,6" />
+                <Button Content="Inventory" Command="{Binding ShowCommand}" CommandParameter="Inventory" Style="{StaticResource Button.Secondary}" Margin="0,0,6,6" />
+                <Button Content="Shifts" Command="{Binding ShowCommand}" CommandParameter="Shifts" Style="{StaticResource Button.Secondary}" Margin="0,0,6,6" />
+                <Button Content="Bookings" Command="{Binding ShowCommand}" CommandParameter="Bookings" Style="{StaticResource Button.Secondary}" Margin="0,0,6,6" />
+            </WrapPanel>
+            <ctrl:FeedbackBanner Kind="{Binding Feedback.Kind}" Message="{Binding Feedback.Message}"
+                                 DismissCommand="{Binding Feedback.DismissCommand}" Margin="0,8,0,0" />
+        </StackPanel>
+
+        <!-- Summary -->
+        <Border Grid.Row="2" Margin="28,12,28,0" Style="{StaticResource Card}" Padding="16">
+            <StackPanel>
+                <TextBlock Text="{Binding Table.Title}" Foreground="{DynamicResource Brush.Text}" FontWeight="SemiBold" Margin="0,0,0,6" />
+                <ItemsControl ItemsSource="{Binding Table.Summary}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" Style="{StaticResource Text.Caption}" TextWrapping="Wrap" Margin="0,1" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </Border>
+
+        <!-- Report grid -->
+        <Grid Grid.Row="3" Margin="28,12,28,20">
+            <TextBlock Text="No data for this report and date range." Style="{StaticResource Text.Body}"
+                       HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,24,0,0"
+                       Visibility="{Binding Table.IsEmpty, Converter={StaticResource BoolToVisible}}" />
+            <DataGrid x:Name="Grid" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="Column"
+                      CanUserAddRows="False" CanUserDeleteRows="False" GridLinesVisibility="Horizontal"
+                      Background="Transparent" RowBackground="Transparent" AlternatingRowBackground="{DynamicResource Brush.Card}"
+                      BorderBrush="{DynamicResource Brush.Border}" BorderThickness="1"
+                      Foreground="{DynamicResource Brush.Text}"
+                      Visibility="{Binding Table.IsEmpty, Converter={StaticResource InverseBoolToVisible}}"
+                      ctrl:SmoothScrollBehavior.Enabled="True" />
+        </Grid>
+    </Grid>
+</UserControl>

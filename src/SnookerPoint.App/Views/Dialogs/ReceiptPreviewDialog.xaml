@@ -1,0 +1,38 @@
+<Window x:Class="SnookerPoint.App.Views.Dialogs.ReceiptPreviewDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ctrl="clr-namespace:SnookerPoint.App.Controls"
+        Title="Receipt"
+        FontFamily="{StaticResource Font.Ui}"
+        Width="420" Height="620" MaxHeight="800"
+        ResizeMode="CanResize" WindowStyle="SingleBorderWindow"
+        WindowStartupLocation="CenterOwner"
+        Background="{DynamicResource Brush.Background}">
+    <Border Background="{DynamicResource Brush.Surface}" Padding="24">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <TextBlock x:Name="TitleText" Grid.Row="0" Text="Receipt preview" Style="{StaticResource Text.Heading}" Margin="0,0,0,12" />
+
+            <Border Grid.Row="1" Background="{DynamicResource Brush.Card}" BorderBrush="{DynamicResource Brush.Border}"
+                    BorderThickness="1" CornerRadius="8" Padding="14">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" ctrl:SmoothScrollBehavior.Enabled="True">
+                    <TextBlock x:Name="ReceiptText" FontFamily="Consolas" FontSize="13"
+                               Foreground="{DynamicResource Brush.Text}" TextWrapping="NoWrap" />
+                </ScrollViewer>
+            </Border>
+
+            <TextBlock x:Name="StatusText" Grid.Row="2" Style="{StaticResource Text.Caption}" Margin="0,10,0,0" TextWrapping="Wrap" />
+
+            <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
+                <Button Content="Close" IsCancel="True" Style="{StaticResource Button.Secondary}" Margin="0,0,10,0" />
+                <Button Content="Print" Click="OnPrint" IsDefault="True" Style="{StaticResource Button.Primary}" />
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

@@ -1,0 +1,62 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\SnookerPoint.Application\SnookerPoint.Application.csproj" />
+    <ProjectReference Include="..\SnookerPoint.Infrastructure\SnookerPoint.Infrastructure.csproj" />
+    <ProjectReference Include="..\SnookerPoint.Licensing\SnookerPoint.Licensing.csproj" />
+    <ProjectReference Include="..\SnookerPoint.Domain\SnookerPoint.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.10" />
+    <PackageReference Include="Serilog.Extensions.Hosting" Version="10.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon Condition="Exists('Assets\SnookerPoint.ico')">Assets\SnookerPoint.ico</ApplicationIcon>
+    <Version>1.0.1</Version>
+    <AssemblyVersion>1.0.1.0</AssemblyVersion>
+    <FileVersion>1.0.1.0</FileVersion>
+    <Product>Snooker Point</Product>
+    <Company>Snooker Point</Company>
+    <!-- Licensing build profile: Development (default), Pilot, or Customer. -->
+    <LicenseProfile Condition="'$(LicenseProfile)' == ''">Development</LicenseProfile>
+  </PropertyGroup>
+
+  <!-- Development builds honour the local public-key override; Pilot/Customer builds do not. -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <DefineConstants>$(DefineConstants);DEV_LICENSING</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Embedded public verification key (public material). Empty until the approved key is set. -->
+    <EmbeddedResource Include="Licensing\PublicKey.txt">
+      <LogicalName>SnookerPoint.App.Licensing.PublicKey.txt</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <!--
+    Build validation for a Pilot/Customer publish. Fails the build unless a non-empty public key
+    is embedded and the development override is disabled. Run with, e.g.:
+        dotnet publish -c Release -p:LicenseProfile=Pilot
+  -->
+  <Target Name="ValidateLicenseProfile" BeforeTargets="Publish"
+          Condition="'$(LicenseProfile)' == 'Pilot' or '$(LicenseProfile)' == 'Customer'">
+    <Error Condition="$(DefineConstants.Contains('DEV_LICENSING'))"
+           Text="License profile '$(LicenseProfile)' must not define DEV_LICENSING (build in Release, not Debug)." />
+    <ReadLinesFromFile File="Licensing\PublicKey.txt">
+      <Output TaskParameter="Lines" ItemName="_PublicKeyLines" />
+    </ReadLinesFromFile>
+    <Error Condition="'@(_PublicKeyLines)' == ''"
+           Text="License profile '$(LicenseProfile)' requires a non-empty embedded public key in Licensing/PublicKey.txt. Set the approved public key (approval required) before building a Pilot/Customer release." />
+    <Message Importance="high" Text="License profile '$(LicenseProfile)': embedded public key present; development override disabled." />
+  </Target>
+
+</Project>

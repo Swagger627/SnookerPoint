@@ -1,0 +1,117 @@
+<Window x:Class="SnookerPoint.App.Views.Dialogs.CorrectionDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Correct Session"
+        FontFamily="{StaticResource Font.Ui}"
+        Width="480" SizeToContent="Height"
+        ResizeMode="NoResize" WindowStyle="SingleBorderWindow"
+        WindowStartupLocation="CenterOwner"
+        Background="{DynamicResource Brush.Background}">
+    <Border Background="{DynamicResource Brush.Surface}" Padding="24">
+        <StackPanel>
+            <TextBlock Style="{StaticResource Text.Heading}">
+                <Run Text="Correct session #" /><Run Text="{Binding SessionNumber, Mode=OneWay}" /><Run Text="  ·  " /><Run Text="{Binding StatusText, Mode=OneWay}" />
+            </TextBlock>
+            <TextBlock Text="Corrections are recorded and audited; original values are kept and cannot be overwritten silently."
+                       Style="{StaticResource Text.Caption}" Margin="0,6,0,14" TextWrapping="Wrap" />
+
+            <!-- Start time -->
+            <RadioButton Content="Adjust session start time" IsChecked="{Binding IsStartTime}" Foreground="{DynamicResource Brush.Text}" Margin="0,0,0,4" />
+            <StackPanel Margin="22,0,0,8" Visibility="{Binding IsStartTime, Converter={StaticResource BoolToVisible}}">
+                <TextBlock Style="{StaticResource Text.Caption}"><Run Text="Original: " /><Run Text="{Binding CurrentStartText, Mode=OneWay}" /></TextBlock>
+                <TextBlock Text="Shift by (minutes, negative = earlier)" Style="{StaticResource Text.Caption}" Margin="0,6,0,4" />
+                <TextBox Text="{Binding StartShiftMinutes, UpdateSourceTrigger=PropertyChanged}" Padding="8,6" Width="120" HorizontalAlignment="Left" />
+            </StackPanel>
+
+            <!-- Pause start -->
+            <RadioButton Content="Adjust a pause start time" IsChecked="{Binding IsPauseStart}" IsEnabled="{Binding HasPauses}" Foreground="{DynamicResource Brush.Text}" Margin="0,0,0,4" />
+            <StackPanel Margin="22,0,0,8" Visibility="{Binding IsPauseStart, Converter={StaticResource BoolToVisible}}">
+                <ComboBox ItemsSource="{Binding Pauses}" SelectedItem="{Binding SelectedPause}" DisplayMemberPath="Text" Padding="8,6" Width="240" HorizontalAlignment="Left" />
+                <TextBlock Style="{StaticResource Text.Caption}" Margin="0,6,0,0"><Run Text="Original: " /><Run Text="{Binding SelectedPauseStartText, Mode=OneWay}" /></TextBlock>
+                <TextBlock Text="Shift by (minutes)" Style="{StaticResource Text.Caption}" Margin="0,6,0,4" />
+                <TextBox Text="{Binding PauseStartShiftMinutes, UpdateSourceTrigger=PropertyChanged}" Padding="8,6" Width="120" HorizontalAlignment="Left" />
+            </StackPanel>
+
+            <!-- Pause end -->
+            <RadioButton Content="Adjust a pause end time" IsChecked="{Binding IsPauseEnd}" IsEnabled="{Binding HasClosedPauses}" Foreground="{DynamicResource Brush.Text}" Margin="0,0,0,4" />
+            <StackPanel Margin="22,0,0,8" Visibility="{Binding IsPauseEnd, Converter={StaticResource BoolToVisible}}">
+                <ComboBox ItemsSource="{Binding ClosedPauses}" SelectedItem="{Binding SelectedClosedPause}" DisplayMemberPath="Text" Padding="8,6" Width="240" HorizontalAlignment="Left" />
+                <TextBlock Style="{StaticResource Text.Caption}" Margin="0,6,0,0"><Run Text="Original: " /><Run Text="{Binding SelectedPauseEndText, Mode=OneWay}" /></TextBlock>
+                <TextBlock Text="Shift by (minutes)" Style="{StaticResource Text.Caption}" Margin="0,6,0,4" />
+                <TextBox Text="{Binding PauseEndShiftMinutes, UpdateSourceTrigger=PropertyChanged}" Padding="8,6" Width="120" HorizontalAlignment="Left" />
+            </StackPanel>
+
+            <!-- Current billing type -->
+            <TextBlock Margin="0,4,0,6" Style="{StaticResource Text.Caption}">
+                <Run Text="Current billing: " /><Run Text="{Binding CurrentBillingText, Mode=OneWay}" />
+            </TextBlock>
+
+            <!-- Rate (hourly sessions only) -->
+            <RadioButton Content="Correct a table's hourly rate" IsChecked="{Binding IsRate}" IsEnabled="{Binding CanCorrectRate}" Foreground="{DynamicResource Brush.Text}" Margin="0,0,0,4" />
+            <StackPanel Margin="22,0,0,8" Visibility="{Binding IsRate, Converter={StaticResource BoolToVisible}}">
+                <ComboBox ItemsSource="{Binding Segments}" SelectedItem="{Binding SelectedSegment}" DisplayMemberPath="Text" Padding="8,6" Width="240" HorizontalAlignment="Left" />
+                <TextBlock Style="{StaticResource Text.Caption}" Margin="0,6,0,0"><Run Text="Original: " /><Run Text="{Binding SelectedSegmentRateText, Mode=OneWay}" /></TextBlock>
+                <TextBlock Text="New rate (Rs per hour)" Style="{StaticResource Text.Caption}" Margin="0,6,0,4" />
+                <TextBox Text="{Binding NewRateRupees, UpdateSourceTrigger=PropertyChanged}" Padding="8,6" Width="120" HorizontalAlignment="Left" />
+            </StackPanel>
+
+            <!-- Fixed amount (fixed sessions only) -->
+            <RadioButton Content="Correct the fixed charge" IsChecked="{Binding IsFixedAmount}" IsEnabled="{Binding CanCorrectFixed}" Foreground="{DynamicResource Brush.Text}" Margin="0,0,0,4" />
+            <StackPanel Margin="22,0,0,8" Visibility="{Binding IsFixedAmount, Converter={StaticResource BoolToVisible}}">
+                <TextBlock Text="New fixed charge (Rs)" Style="{StaticResource Text.Caption}" Margin="0,0,0,4" />
+                <TextBox Text="{Binding NewFixedRupees, UpdateSourceTrigger=PropertyChanged}" Padding="8,6" Width="120" HorizontalAlignment="Left" />
+            </StackPanel>
+
+            <!-- Switch to fixed (hourly sessions only) -->
+            <RadioButton Content="Switch to a fixed charge" IsChecked="{Binding IsSwitchToFixed}" IsEnabled="{Binding CanSwitchToFixed}" Foreground="{DynamicResource Brush.Text}" Margin="0,0,0,4" />
+            <StackPanel Margin="22,0,0,8" Visibility="{Binding IsSwitchToFixed, Converter={StaticResource BoolToVisible}}">
+                <TextBlock Text="Fixed charge (Rs)" Style="{StaticResource Text.Caption}" Margin="0,0,0,4" />
+                <TextBox Text="{Binding SwitchFixedRupees, UpdateSourceTrigger=PropertyChanged}" Padding="8,6" Width="120" HorizontalAlignment="Left" />
+            </StackPanel>
+
+            <!-- Switch to hourly (fixed sessions only) -->
+            <RadioButton Content="Switch to hourly billing" IsChecked="{Binding IsSwitchToHourly}" IsEnabled="{Binding CanSwitchToHourly}" Foreground="{DynamicResource Brush.Text}" Margin="0,0,0,4" />
+            <StackPanel Margin="22,0,0,8" Visibility="{Binding IsSwitchToHourly, Converter={StaticResource BoolToVisible}}">
+                <TextBlock Text="The session will be charged by playing time at its snapshotted rates." Style="{StaticResource Text.Caption}" TextWrapping="Wrap" />
+            </StackPanel>
+
+            <!-- Charge adjustment -->
+            <RadioButton Content="Add a charge adjustment" IsChecked="{Binding IsChargeAdjustment}" Foreground="{DynamicResource Brush.Text}" Margin="0,0,0,4" />
+            <StackPanel Margin="22,0,0,8" Visibility="{Binding IsChargeAdjustment, Converter={StaticResource BoolToVisible}}">
+                <TextBlock Text="Amount in Rs (negative to reduce)" Style="{StaticResource Text.Caption}" Margin="0,0,0,4" />
+                <TextBox Text="{Binding AdjustmentRupees, UpdateSourceTrigger=PropertyChanged}" Padding="8,6" Width="120" HorizontalAlignment="Left" />
+            </StackPanel>
+
+            <!-- Void -->
+            <RadioButton Content="Void this session (created by mistake)" IsChecked="{Binding IsVoid}" Foreground="{DynamicResource Brush.Text}" Margin="0,0,0,4" />
+
+            <!-- Preview -->
+            <Border Background="{DynamicResource Brush.Card}" BorderBrush="{DynamicResource Brush.Border}" BorderThickness="1"
+                    CornerRadius="10" Padding="14,12" Margin="0,12,0,0">
+                <StackPanel>
+                    <Grid Margin="0,2"><TextBlock Text="Proposed value" Style="{StaticResource Text.Body}" /><TextBlock Text="{Binding ProposedValueText}" Foreground="{DynamicResource Brush.Text}" HorizontalAlignment="Right" /></Grid>
+                    <Grid Margin="0,4,0,0">
+                        <TextBlock Text="Charge" Style="{StaticResource Text.Body}" />
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <TextBlock Text="{Binding OldChargeText}" Foreground="{DynamicResource Brush.TextMuted}" />
+                            <TextBlock Text="  →  " Foreground="{DynamicResource Brush.TextMuted}" />
+                            <TextBlock Text="{Binding NewChargeText}" Foreground="{DynamicResource Brush.Accent}" FontWeight="SemiBold" />
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <TextBlock Text="Reason" Style="{StaticResource Text.Caption}" Margin="0,14,0,4" />
+            <TextBox x:Name="ReasonBox" Text="{Binding Reason, UpdateSourceTrigger=PropertyChanged}" Padding="9,8" TextWrapping="Wrap" MinLines="2" />
+
+            <TextBlock Text="{Binding ErrorMessage}" Foreground="{DynamicResource Brush.Danger}"
+                       TextWrapping="Wrap" Margin="0,12,0,0"
+                       Visibility="{Binding ErrorMessage, Converter={StaticResource NullToCollapsed}}" />
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,18,0,0">
+                <Button Content="Cancel" IsCancel="True" Style="{StaticResource Button.Secondary}" Margin="0,0,10,0" />
+                <Button Content="Apply correction" IsDefault="True" Click="OnConfirm" Style="{StaticResource Button.Primary}" />
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</Window>

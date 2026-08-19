@@ -1,0 +1,126 @@
+<UserControl x:Class="SnookerPoint.App.Views.ManageTablesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ctrl="clr-namespace:SnookerPoint.App.Controls"
+             Background="{DynamicResource Brush.Background}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Top bar -->
+        <Border Grid.Row="0" Height="64" Background="{DynamicResource Brush.Surface}"
+                BorderBrush="{DynamicResource Brush.Border}" BorderThickness="0,0,0,1">
+            <Grid Margin="20,0">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="Manage tables" Style="{StaticResource Text.Heading}" VerticalAlignment="Center" />
+                    <TextBlock Text="Add, rename, set rates and activate tables." Style="{StaticResource Text.Caption}"
+                               VerticalAlignment="Center" Margin="14,0,0,0" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <StackPanel Margin="0,0,16,0" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding UserDisplayName}" Foreground="{DynamicResource Brush.Text}"
+                                   FontWeight="SemiBold" HorizontalAlignment="Right" />
+                        <TextBlock Text="{Binding RoleName}" Style="{StaticResource Text.Caption}" HorizontalAlignment="Right" />
+                    </StackPanel>
+                    <Button Content="Tables" Command="{Binding TablesCommand}" Style="{StaticResource Button.Secondary}" Margin="0,0,8,0" />
+                    <Button Content="Theme" Command="{Binding ToggleThemeCommand}" Style="{StaticResource Button.Secondary}" Margin="0,0,8,0" />
+                    <Button Content="Home" Command="{Binding HomeCommand}" Style="{StaticResource Button.Secondary}" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Toolbar: add + apply-rate-to-selected -->
+        <Border Grid.Row="1" Margin="28,18,28,0" Background="{DynamicResource Brush.Card}"
+                BorderBrush="{DynamicResource Brush.Border}" BorderThickness="1" CornerRadius="12" Padding="16">
+            <WrapPanel VerticalAlignment="Center">
+                <Button Content="Add table" Command="{Binding AddTableCommand}"
+                        Style="{StaticResource Button.Secondary}" Margin="0,0,20,8" />
+                <StackPanel Orientation="Horizontal" Margin="0,0,8,8" VerticalAlignment="Center">
+                    <TextBlock Text="Set rate (Rs/hr) for ticked tables:" Style="{StaticResource Text.Caption}"
+                               VerticalAlignment="Center" Margin="0,0,8,0" />
+                    <TextBox Text="{Binding BulkRateText, UpdateSourceTrigger=PropertyChanged}" Width="90" Padding="8,6" />
+                    <Button Content="Apply" Command="{Binding ApplyRateToSelectedCommand}"
+                            Style="{StaticResource Button.Secondary}" Margin="8,0,0,0" />
+                </StackPanel>
+            </WrapPanel>
+        </Border>
+
+        <!-- Table list -->
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Padding="28,16,28,8"
+                      ctrl:SmoothScrollBehavior.Enabled="True">
+            <StackPanel MinWidth="820">
+                <!-- Header -->
+                <Grid Margin="0,0,0,6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="44" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="150" />
+                        <ColumnDefinition Width="130" />
+                        <ColumnDefinition Width="110" />
+                        <ColumnDefinition Width="120" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="Pick" Style="{StaticResource Text.Caption}" />
+                    <TextBlock Grid.Column="1" Text="Name" Style="{StaticResource Text.Caption}" />
+                    <TextBlock Grid.Column="2" Text="Type" Style="{StaticResource Text.Caption}" />
+                    <TextBlock Grid.Column="3" Text="Rate (Rs/hr)" Style="{StaticResource Text.Caption}" />
+                    <TextBlock Grid.Column="4" Text="Active" Style="{StaticResource Text.Caption}" />
+                    <TextBlock Grid.Column="5" Text="Status" Style="{StaticResource Text.Caption}" />
+                </Grid>
+
+                <ItemsControl ItemsSource="{Binding Rows}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="{DynamicResource Brush.Border}" BorderThickness="0,0,0,1" Padding="0,9">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="44" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="150" />
+                                        <ColumnDefinition Width="130" />
+                                        <ColumnDefinition Width="110" />
+                                        <ColumnDefinition Width="120" />
+                                    </Grid.ColumnDefinitions>
+                                    <CheckBox Grid.Column="0" IsChecked="{Binding IsSelected}" VerticalAlignment="Center" />
+                                    <TextBox Grid.Column="1" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+                                             Margin="0,0,12,0" Padding="8,6" VerticalAlignment="Center" />
+                                    <ComboBox Grid.Column="2" ItemsSource="{Binding TypeOptions}" SelectedItem="{Binding Type}"
+                                              Margin="0,0,12,0" Padding="8,5" VerticalAlignment="Center" />
+                                    <TextBox Grid.Column="3" Text="{Binding RateText, UpdateSourceTrigger=PropertyChanged}"
+                                             Margin="0,0,12,0" Padding="8,6" VerticalAlignment="Center" />
+                                    <CheckBox Grid.Column="4" IsChecked="{Binding IsActive}" VerticalAlignment="Center"
+                                              IsEnabled="{Binding InUse, Converter={StaticResource InverseBool}}"
+                                              ToolTip="A table in use cannot be deactivated until its session is finished." />
+                                    <TextBlock Grid.Column="5" VerticalAlignment="Center"
+                                               Text="In use" Foreground="{DynamicResource Brush.Accent}" FontWeight="SemiBold"
+                                               Visibility="{Binding InUse, Converter={StaticResource BoolToVisible}}" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Footer: messages + save/cancel -->
+        <Border Grid.Row="3" Background="{DynamicResource Brush.Surface}"
+                BorderBrush="{DynamicResource Brush.Border}" BorderThickness="0,1,0,0" Padding="28,14">
+            <Grid>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="{Binding ErrorMessage}" Foreground="{DynamicResource Brush.Danger}" TextWrapping="Wrap"
+                               Visibility="{Binding ErrorMessage, Converter={StaticResource NullToCollapsed}}" />
+                    <TextBlock Text="{Binding StatusMessage}" Style="{StaticResource Text.Caption}"
+                               Visibility="{Binding StatusMessage, Converter={StaticResource NullToCollapsed}}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="Cancel" Command="{Binding CancelCommand}" Style="{StaticResource Button.Secondary}" Margin="0,0,10,0" />
+                    <Button Content="Save" Command="{Binding SaveCommand}" IsEnabled="{Binding CanManage}"
+                            Style="{StaticResource Button.Primary}" />
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

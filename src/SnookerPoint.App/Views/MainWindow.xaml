@@ -1,0 +1,18 @@
+<Window x:Class="SnookerPoint.App.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Snooker Point"
+        FontFamily="{StaticResource Font.Ui}"
+        Height="720" Width="1120"
+        MinHeight="560" MinWidth="820"
+        WindowStartupLocation="CenterScreen"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="ClearType"
+        Background="{DynamicResource Brush.Background}">
+
+    <!-- Hosts the active screen; data templates (App.xaml) map each view model to its view. -->
+    <ContentControl Content="{Binding Current}" />
+</Window>

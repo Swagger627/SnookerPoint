@@ -1,0 +1,113 @@
+<UserControl x:Class="SnookerPoint.App.Views.AccountView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ctrl="clr-namespace:SnookerPoint.App.Controls"
+             Background="{DynamicResource Brush.Background}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Top bar -->
+        <Border Grid.Row="0" Height="64" Background="{DynamicResource Brush.Surface}"
+                BorderBrush="{DynamicResource Brush.Border}" BorderThickness="0,0,0,1">
+            <Grid Margin="20,0">
+                <TextBlock Text="My account &amp; security" Style="{StaticResource Text.Heading}" VerticalAlignment="Center" />
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <StackPanel Margin="0,0,16,0" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding UserDisplayName}" Foreground="{DynamicResource Brush.Text}" FontWeight="SemiBold" HorizontalAlignment="Right" />
+                        <TextBlock Text="{Binding RoleName}" Style="{StaticResource Text.Caption}" HorizontalAlignment="Right" />
+                    </StackPanel>
+                    <Button Content="Theme" Command="{Binding ToggleThemeCommand}" Style="{StaticResource Button.Secondary}" Margin="0,0,8,0" />
+                    <Button Content="Home" Command="{Binding HomeCommand}" Style="{StaticResource Button.Secondary}"
+                            Visibility="{Binding CanLeave, Converter={StaticResource BoolToVisible}}" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="28"
+                      ctrl:SmoothScrollBehavior.Enabled="True">
+            <StackPanel MaxWidth="560" HorizontalAlignment="Center">
+
+                <!-- Forced-change banner -->
+                <Border Background="{DynamicResource Brush.AccentSubtle}" BorderBrush="{DynamicResource Brush.Border}"
+                        BorderThickness="1" CornerRadius="10" Padding="16,12" Margin="0,0,0,18"
+                        Visibility="{Binding IsForcedChange, Converter={StaticResource BoolToVisible}}">
+                    <StackPanel>
+                        <TextBlock Text="Please choose a new password" Foreground="{DynamicResource Brush.Text}" FontWeight="SemiBold" />
+                        <TextBlock Text="Your account is using a temporary password. Set your own password to continue."
+                                   Style="{StaticResource Text.Caption}" TextWrapping="Wrap" Margin="0,3,0,0" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Feedback banner (success / warning / error) -->
+                <ctrl:FeedbackBanner Kind="{Binding Feedback.Kind}" Message="{Binding Feedback.Message}"
+                                     DismissCommand="{Binding Feedback.DismissCommand}" Margin="0,0,0,14" />
+
+                <!-- Change password -->
+                <Border Style="{StaticResource Card}" Padding="20" Margin="0,0,0,16">
+                    <StackPanel>
+                        <TextBlock Text="Change password" Foreground="{DynamicResource Brush.Text}" FontWeight="SemiBold" Margin="0,0,0,10" />
+                        <TextBlock Text="Current password" Style="{StaticResource Text.Caption}" Margin="0,0,0,4" />
+                        <ctrl:CredentialBox Password="{Binding CurrentPassword, Mode=TwoWay}" Reveal="{Binding RevealPassword}" SecretName="password" />
+                        <TextBlock Text="New password" Style="{StaticResource Text.Caption}" Margin="0,10,0,4" />
+                        <ctrl:CredentialBox Password="{Binding NewPassword, Mode=TwoWay}" Reveal="{Binding RevealPassword}" SecretName="password" />
+                        <TextBlock Text="Confirm new password" Style="{StaticResource Text.Caption}" Margin="0,10,0,4" />
+                        <ctrl:CredentialBox Password="{Binding ConfirmPassword, Mode=TwoWay}" Reveal="{Binding RevealPassword}" SecretName="password" />
+                        <CheckBox Content="Show passwords" IsChecked="{Binding RevealPassword}" Foreground="{DynamicResource Brush.TextMuted}" Margin="0,10,0,0" />
+                        <Button Content="Change password" Command="{Binding ChangePasswordCommand}" Style="{StaticResource Button.Primary}"
+                                HorizontalAlignment="Left" Margin="0,14,0,0" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Add / change PIN (state-aware title + action) -->
+                <Border Style="{StaticResource Card}" Padding="20" Margin="0,0,0,16"
+                        Visibility="{Binding ShowPinCard, Converter={StaticResource BoolToVisible}}">
+                    <StackPanel>
+                        <TextBlock Text="{Binding PinCardTitle}" Foreground="{DynamicResource Brush.Text}" FontWeight="SemiBold" Margin="0,0,0,10" />
+                        <TextBlock Text="Confirm your current password to authorise this change — you do not need your existing PIN."
+                                   Style="{StaticResource Text.Caption}" TextWrapping="Wrap" Margin="0,0,0,8" />
+                        <TextBlock Text="Current password" Style="{StaticResource Text.Caption}" Margin="0,0,0,4" />
+                        <ctrl:CredentialBox Password="{Binding PinCurrentPassword, Mode=TwoWay}" Reveal="{Binding RevealPin}" SecretName="password" />
+                        <TextBlock Text="New PIN (digits only)" Style="{StaticResource Text.Caption}" Margin="0,10,0,4" />
+                        <ctrl:CredentialBox Password="{Binding NewPin, Mode=TwoWay}" Reveal="{Binding RevealPin}" SecretName="PIN" />
+                        <TextBlock Text="Confirm new PIN" Style="{StaticResource Text.Caption}" Margin="0,10,0,4" />
+                        <ctrl:CredentialBox Password="{Binding ConfirmPin, Mode=TwoWay}" Reveal="{Binding RevealPin}" SecretName="PIN" />
+                        <CheckBox Content="Show PIN" IsChecked="{Binding RevealPin}" Foreground="{DynamicResource Brush.TextMuted}" Margin="0,10,0,0" />
+                        <Button Content="{Binding PinActionLabel}" Command="{Binding ChangePinCommand}" Style="{StaticResource Button.Secondary}"
+                                HorizontalAlignment="Left" Margin="0,14,0,0" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Remove PIN (only when a PIN exists) -->
+                <Border Style="{StaticResource Card}" Padding="20" Margin="0,0,0,16"
+                        Visibility="{Binding ShowRemovePinCard, Converter={StaticResource BoolToVisible}}">
+                    <StackPanel>
+                        <TextBlock Text="Remove PIN" Foreground="{DynamicResource Brush.Text}" FontWeight="SemiBold" Margin="0,0,0,10" />
+                        <TextBlock Text="PIN login will be disabled until you set a new PIN." Style="{StaticResource Text.Caption}" Margin="0,0,0,8" TextWrapping="Wrap" />
+                        <TextBlock Text="Current password" Style="{StaticResource Text.Caption}" Margin="0,0,0,4" />
+                        <ctrl:CredentialBox Password="{Binding RemovePinCurrentPassword, Mode=TwoWay}" SecretName="password" />
+                        <Button Content="Remove PIN" Command="{Binding RemovePinCommand}" Style="{StaticResource Button.Secondary}"
+                                HorizontalAlignment="Left" Margin="0,14,0,0" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Owner recovery code -->
+                <Border Style="{StaticResource Card}" Padding="20"
+                        Visibility="{Binding IsOwner, Converter={StaticResource BoolToVisible}}">
+                    <StackPanel>
+                        <TextBlock Text="Owner recovery code" Foreground="{DynamicResource Brush.Text}" FontWeight="SemiBold" Margin="0,0,0,10" />
+                        <TextBlock TextWrapping="Wrap" Style="{StaticResource Text.Caption}" Margin="0,0,0,8"
+                                   Text="A recovery code lets you regain access if you forget your password. It is shown once — store it safely. Generating a new code replaces any previous one." />
+                        <TextBlock Text="Current password" Style="{StaticResource Text.Caption}" Margin="0,0,0,4" />
+                        <ctrl:CredentialBox Password="{Binding RecoveryCurrentPassword, Mode=TwoWay}" SecretName="password" />
+                        <Button Content="Generate recovery code" Command="{Binding GenerateRecoveryCodeCommand}" Style="{StaticResource Button.Secondary}"
+                                HorizontalAlignment="Left" Margin="0,14,0,0" />
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

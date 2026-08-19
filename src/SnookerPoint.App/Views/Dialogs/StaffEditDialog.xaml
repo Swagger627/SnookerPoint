@@ -1,0 +1,57 @@
+<Window x:Class="SnookerPoint.App.Views.Dialogs.StaffEditDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ctrl="clr-namespace:SnookerPoint.App.Controls"
+        Title="{Binding Title}"
+        FontFamily="{StaticResource Font.Ui}"
+        Width="440" SizeToContent="Height"
+        ResizeMode="NoResize" WindowStyle="SingleBorderWindow"
+        WindowStartupLocation="CenterOwner"
+        Background="{DynamicResource Brush.Background}">
+    <Border Background="{DynamicResource Brush.Surface}" Padding="24">
+        <StackPanel>
+            <TextBlock Text="{Binding Title}" Style="{StaticResource Text.Heading}" Margin="0,0,0,16" />
+
+            <TextBlock Text="Display name" Style="{StaticResource Text.Caption}" Margin="0,0,0,4" />
+            <TextBox x:Name="NameBox" Text="{Binding DisplayName, UpdateSourceTrigger=PropertyChanged}" Padding="8,7" FontSize="14" />
+
+            <TextBlock Text="Username" Style="{StaticResource Text.Caption}" Margin="0,14,0,4" />
+            <TextBox Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" Padding="8,7" FontSize="14" />
+
+            <TextBlock Text="Role" Style="{StaticResource Text.Caption}" Margin="0,14,0,4" />
+            <ComboBox ItemsSource="{Binding RoleOptions}" SelectedItem="{Binding SelectedRole}" Padding="8,6" FontSize="14">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Converter={StaticResource RoleName}}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+
+            <!-- Credentials (create only) -->
+            <StackPanel Visibility="{Binding IsNew, Converter={StaticResource BoolToVisible}}">
+                <TextBlock Text="Password" Style="{StaticResource Text.Caption}" Margin="0,14,0,4" />
+                <ctrl:CredentialBox Password="{Binding Password, Mode=TwoWay}" Reveal="{Binding RevealSecrets}" SecretName="password" />
+
+                <TextBlock Text="Confirm password" Style="{StaticResource Text.Caption}" Margin="0,10,0,4" />
+                <ctrl:CredentialBox Password="{Binding ConfirmPassword, Mode=TwoWay}" Reveal="{Binding RevealSecrets}" SecretName="password" />
+
+                <TextBlock Text="PIN (optional, digits only)" Style="{StaticResource Text.Caption}" Margin="0,14,0,4" />
+                <ctrl:CredentialBox Password="{Binding Pin, Mode=TwoWay}" Reveal="{Binding RevealSecrets}" SecretName="PIN" />
+
+                <TextBlock Text="Confirm PIN" Style="{StaticResource Text.Caption}" Margin="0,10,0,4" />
+                <ctrl:CredentialBox Password="{Binding ConfirmPin, Mode=TwoWay}" Reveal="{Binding RevealSecrets}" SecretName="PIN" />
+
+                <CheckBox Content="Show password and PIN" IsChecked="{Binding RevealSecrets}"
+                          Foreground="{DynamicResource Brush.TextMuted}" Margin="0,12,0,0" />
+            </StackPanel>
+
+            <TextBlock Text="{Binding ErrorMessage}" Foreground="{DynamicResource Brush.Danger}" TextWrapping="Wrap" Margin="0,14,0,0"
+                       Visibility="{Binding ErrorMessage, Converter={StaticResource NullToCollapsed}}" />
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,22,0,0">
+                <Button Content="Cancel" IsCancel="True" Style="{StaticResource Button.Secondary}" Margin="0,0,10,0" />
+                <Button Content="Save" IsDefault="True" Click="OnConfirm" Style="{StaticResource Button.Primary}" />
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</Window>

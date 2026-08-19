@@ -1,0 +1,69 @@
+<Window x:Class="SnookerPoint.App.Views.Dialogs.StartSessionDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Start Session"
+        FontFamily="{StaticResource Font.Ui}"
+        Width="440" SizeToContent="Height"
+        ResizeMode="NoResize" WindowStyle="SingleBorderWindow"
+        WindowStartupLocation="CenterOwner"
+        Background="{DynamicResource Brush.Background}">
+    <Border Background="{DynamicResource Brush.Surface}" Padding="24">
+        <StackPanel>
+            <TextBlock Text="Start Session" Style="{StaticResource Text.Heading}" />
+
+            <Border Background="{DynamicResource Brush.Card}" BorderBrush="{DynamicResource Brush.Border}"
+                    BorderThickness="1" CornerRadius="10" Padding="14,12" Margin="0,12,0,0">
+                <StackPanel>
+                    <Grid Margin="0,2"><TextBlock Text="Table" Style="{StaticResource Text.Body}" /><TextBlock Text="{Binding TableName}" Foreground="{DynamicResource Brush.Text}" HorizontalAlignment="Right" /></Grid>
+                    <Grid Margin="0,2"><TextBlock Text="Type" Style="{StaticResource Text.Body}" /><TextBlock Text="{Binding TableType}" Foreground="{DynamicResource Brush.Text}" HorizontalAlignment="Right" /></Grid>
+                    <Grid Margin="0,2"><TextBlock Text="Rate" Style="{StaticResource Text.Body}" /><TextBlock Text="{Binding RateText}" Foreground="{DynamicResource Brush.Text}" HorizontalAlignment="Right" /></Grid>
+                    <Grid Margin="0,2"><TextBlock Text="Billing" Style="{StaticResource Text.Body}" /><TextBlock Text="{Binding PolicySummary}" Foreground="{DynamicResource Brush.TextMuted}" HorizontalAlignment="Right" /></Grid>
+                    <Grid Margin="0,2"><TextBlock Text="Now" Style="{StaticResource Text.Body}" /><TextBlock Text="{Binding CurrentTimeText}" Foreground="{DynamicResource Brush.TextMuted}" HorizontalAlignment="Right" /></Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Billing type -->
+            <TextBlock Text="Billing type" Style="{StaticResource Text.Caption}" Margin="0,16,0,6" />
+            <StackPanel Orientation="Horizontal">
+                <RadioButton Content="Hourly" IsChecked="{Binding IsHourly}" GroupName="Billing"
+                             Foreground="{DynamicResource Brush.Text}" Margin="0,0,20,0" VerticalContentAlignment="Center" />
+                <RadioButton Content="Fixed amount" IsChecked="{Binding IsFixed}" GroupName="Billing"
+                             Foreground="{DynamicResource Brush.Text}" VerticalContentAlignment="Center" />
+            </StackPanel>
+
+            <!-- Hourly explanation -->
+            <Border Background="{DynamicResource Brush.AccentSubtle}" BorderBrush="{DynamicResource Brush.Border}"
+                    BorderThickness="1" CornerRadius="8" Padding="12,10" Margin="0,10,0,0"
+                    Visibility="{Binding IsHourly, Converter={StaticResource BoolToVisible}}">
+                <StackPanel>
+                    <TextBlock Text="Charged by playing time." Foreground="{DynamicResource Brush.Text}" FontWeight="SemiBold" />
+                    <TextBlock Style="{StaticResource Text.Caption}" TextWrapping="Wrap" Margin="0,3,0,0">
+                        <Run Text="Rate " /><Run Text="{Binding RateText, Mode=OneWay}" /><Run Text=" · " /><Run Text="{Binding PolicySummary, Mode=OneWay}" />
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+
+            <!-- Fixed amount input -->
+            <StackPanel Visibility="{Binding IsFixed, Converter={StaticResource BoolToVisible}}" Margin="0,10,0,0">
+                <TextBlock Text="Fixed charge (Rs)" Style="{StaticResource Text.Caption}" Margin="0,0,0,4" />
+                <TextBox Text="{Binding FixedAmountRupees, UpdateSourceTrigger=PropertyChanged}" Padding="9,8" />
+                <TextBlock Style="{StaticResource Text.Caption}" TextWrapping="Wrap" Margin="0,6,0,0"
+                           Text="The timer keeps running, but elapsed time will not change this charge." />
+            </StackPanel>
+
+            <TextBlock Text="Customer / label (optional)" Style="{StaticResource Text.Caption}" Margin="0,14,0,4" />
+            <TextBox x:Name="LabelBox" Text="{Binding CustomerLabel, UpdateSourceTrigger=PropertyChanged}" Padding="9,8" />
+
+            <TextBlock Text="Note (optional)" Style="{StaticResource Text.Caption}" Margin="0,12,0,4" />
+            <TextBox Text="{Binding Note, UpdateSourceTrigger=PropertyChanged}" Padding="9,8" TextWrapping="Wrap" MinLines="2" />
+
+            <TextBlock Text="{Binding ErrorMessage}" Foreground="{DynamicResource Brush.Danger}" TextWrapping="Wrap" Margin="0,14,0,0"
+                       Visibility="{Binding ErrorMessage, Converter={StaticResource NullToCollapsed}}" />
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,22,0,0">
+                <Button Content="Cancel" IsCancel="True" Style="{StaticResource Button.Secondary}" Margin="0,0,10,0" />
+                <Button Content="Start Session" IsDefault="True" Click="OnConfirm" Style="{StaticResource Button.Primary}" />
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</Window>

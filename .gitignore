@@ -1,0 +1,101 @@
+# ============================================
+# Snooker Point - Public Repository Ignore
+# ============================================
+
+# Owner-only tools
+tools/
+
+# Generated releases / publish output
+artifacts/
+publish/
+installer/Output/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Private keys / certificates
+private-key.txt
+*.pem
+*.pfx
+*.p12
+*.key
+
+# Generated customer licence files
+*.spl
+
+# Owner-only / sensitive documentation
+docs/pilot/OWNER-ACTIVATION-GUIDE.md
+docs/internal/
+docs/licensing/
+docs/security/
+
+# Owner Licence Manager test
+tests/SnookerPoint.Tests/App/LicenceManagerTests.cs
+
+# .NET build output
+**/bin/
+**/obj/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# JetBrains / Rider
+.idea/
+*.sln.iml
+
+# VS Code local settings
+.vscode/
+
+# Local databases
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+logs/
+Logs/
+
+# Backups / support bundles
+*.bak
+*.backup
+backups/
+Backups/
+support-bundle/
+support-bundles/
+
+# Temporary files
+*.tmp
+*.temp
+*.cache
+~$*
+Thumbs.db
+Desktop.ini
+
+# Test results / coverage
+TestResults/
+coverage/
+coverage.*
+*.trx
+
+# NuGet generated packages
+*.nupkg
+*.snupkg
+packages/
+
+# Local publish settings
+*.pubxml.user
+
+# Crash dumps
+*.dmp
+
+# Generated licence output
+SnookerPointLicences/

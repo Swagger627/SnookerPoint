@@ -1,0 +1,74 @@
+<UserControl x:Class="SnookerPoint.App.Views.LoginView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ctrl="clr-namespace:SnookerPoint.App.Controls"
+             Background="{DynamicResource Brush.Background}">
+    <Grid>
+        <Border Style="{StaticResource Card}" MaxWidth="420" MinWidth="380"
+                HorizontalAlignment="Center" VerticalAlignment="Center">
+            <StackPanel>
+                <!-- Brand -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
+                    <Border Width="38" Height="38" CornerRadius="10" Background="{DynamicResource Brush.Primary}">
+                        <TextBlock Text="SP" Foreground="{DynamicResource Brush.OnPrimary}"
+                                   FontSize="15" FontWeight="Bold"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <TextBlock Text="Snooker Point" Style="{StaticResource Text.Heading}"
+                               VerticalAlignment="Center" Margin="12,0,0,0" />
+                </StackPanel>
+
+                <TextBlock Text="Sign in" Style="{StaticResource Text.Display}" HorizontalAlignment="Center" />
+                <TextBlock Text="Enter your account details to continue."
+                           Style="{StaticResource Text.Body}" HorizontalAlignment="Center"
+                           Margin="0,6,0,20" />
+
+                <!-- Mode switch -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,16">
+                    <Button Content="Password" Command="{Binding UsePasswordModeCommand}"
+                            Style="{StaticResource Button.Secondary}" Margin="0,0,8,0" />
+                    <Button Content="PIN" Command="{Binding UsePinModeCommand}"
+                            Style="{StaticResource Button.Secondary}" />
+                </StackPanel>
+
+                <!-- Username -->
+                <TextBlock Text="Username" Style="{StaticResource Text.Caption}" Margin="0,0,0,4" />
+                <TextBox x:Name="UsernameBox" Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"
+                         Padding="9,8" FontSize="14" />
+
+                <!-- Password entry -->
+                <StackPanel Visibility="{Binding UsePassword, Converter={StaticResource BoolToVisible}}">
+                    <TextBlock Text="Password" Style="{StaticResource Text.Caption}" Margin="0,14,0,4" />
+                    <ctrl:CredentialBox x:Name="PasswordField" Password="{Binding Password, Mode=TwoWay}"
+                                        Reveal="{Binding ShowPassword}" SecretName="password" />
+                </StackPanel>
+
+                <!-- PIN entry -->
+                <StackPanel Visibility="{Binding UsePin, Converter={StaticResource BoolToVisible}}">
+                    <TextBlock Text="PIN" Style="{StaticResource Text.Caption}" Margin="0,14,0,4" />
+                    <ctrl:CredentialBox Password="{Binding Pin, Mode=TwoWay}"
+                                        Reveal="{Binding ShowPassword}" SecretName="PIN" />
+                </StackPanel>
+
+                <CheckBox Content="{Binding ShowSecretLabel}" IsChecked="{Binding ShowPassword}"
+                          Foreground="{DynamicResource Brush.TextMuted}" Margin="0,10,0,0" />
+
+                <!-- Error -->
+                <TextBlock Text="{Binding ErrorMessage}"
+                           Foreground="{DynamicResource Brush.Danger}" TextWrapping="Wrap" Margin="0,14,0,0"
+                           Visibility="{Binding ErrorMessage, Converter={StaticResource NullToCollapsed}}" />
+
+                <!-- Actions -->
+                <Button Content="Sign in" IsDefault="True" Command="{Binding LoginCommand}"
+                        Style="{StaticResource Button.Primary}" HorizontalAlignment="Stretch"
+                        Margin="0,20,0,0" />
+                <Button Content="Forgot password or PIN?" Command="{Binding ForgotCredentialsCommand}"
+                        Style="{StaticResource Button.Secondary}" HorizontalAlignment="Center"
+                        Margin="0,12,0,0" />
+                <Button Content="Exit" Command="{Binding ExitCommand}"
+                        Style="{StaticResource Button.Secondary}" HorizontalAlignment="Stretch"
+                        Margin="0,10,0,0" />
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

@@ -1,0 +1,451 @@
+<UserControl x:Class="SnookerPoint.App.Views.HomeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ctrl="clr-namespace:SnookerPoint.App.Controls"
+             Background="{DynamicResource Brush.Background}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- ==================== TOP BAR ==================== -->
+        <Border Grid.Row="0" Height="64" Background="{DynamicResource Brush.Surface}"
+                BorderBrush="{DynamicResource Brush.Border}" BorderThickness="0,0,0,1">
+            <Grid Margin="20,0">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Border Width="34" Height="34" CornerRadius="9" Background="{DynamicResource Brush.Primary}">
+                        <TextBlock Text="SP" Foreground="{DynamicResource Brush.OnPrimary}"
+                                   FontSize="13" FontWeight="Bold"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <TextBlock Text="{Binding ClubName}" Style="{StaticResource Text.Heading}"
+                               VerticalAlignment="Center" Margin="12,0,0,0" />
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <StackPanel Margin="0,0,16,0" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding UserDisplayName}" Foreground="{DynamicResource Brush.Text}"
+                                   FontWeight="SemiBold" HorizontalAlignment="Right" />
+                        <TextBlock Text="{Binding RoleName}" Style="{StaticResource Text.Caption}"
+                                   HorizontalAlignment="Right" />
+                    </StackPanel>
+                    <Button Content="Advanced" Command="{Binding ToggleAdvancedModeCommand}"
+                            Style="{StaticResource Button.Secondary}" Margin="0,0,8,0"
+                            Visibility="{Binding CanAccessAdvanced, Converter={StaticResource BoolToVisible}}" />
+                    <Button Content="Theme" Command="{Binding ToggleThemeCommand}"
+                            Style="{StaticResource Button.Secondary}" Margin="0,0,8,0" />
+                    <Button Content="My account" Command="{Binding OpenAccountCommand}"
+                            Style="{StaticResource Button.Secondary}" Margin="0,0,8,0" />
+                    <Button Content="Help" Command="{Binding HelpCommand}"
+                            Style="{StaticResource Button.Secondary}" Margin="0,0,8,0" />
+                    <Button Content="Log out" Command="{Binding LogoutCommand}"
+                            Style="{StaticResource Button.Secondary}" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- ==================== CONTENT ==================== -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="28"
+                      ctrl:SmoothScrollBehavior.Enabled="True">
+            <StackPanel MaxWidth="1040" HorizontalAlignment="Center">
+
+                <!-- Restrained trial banner (only during an active trial) -->
+                <Border BorderThickness="1" CornerRadius="12" Padding="16,12" Margin="0,0,0,18"
+                        Background="{DynamicResource Brush.AccentSubtle}" BorderBrush="{DynamicResource Brush.Border}"
+                        Visibility="{Binding ShowTrialBanner, Converter={StaticResource BoolToVisible}}">
+                    <Grid>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="Free trial" Foreground="{DynamicResource Brush.Text}" FontWeight="SemiBold" />
+                            <TextBlock Text="{Binding TrialBannerText}" Style="{StaticResource Text.Caption}" Margin="0,2,0,0" />
+                        </StackPanel>
+                        <Button Content="Activate licence" Command="{Binding ActivateLicenceCommand}"
+                                HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource Button.Secondary}" />
+                    </Grid>
+                </Border>
+
+                <!-- One-time Owner recovery-code prompt (non-blocking) -->
+                <Border Background="{DynamicResource Brush.AccentSubtle}" BorderBrush="{DynamicResource Brush.Border}"
+                        BorderThickness="1" CornerRadius="12" Padding="18,14" Margin="0,0,0,18"
+                        Visibility="{Binding ShowRecoveryPrompt, Converter={StaticResource BoolToVisible}}">
+                    <Grid>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="Set up your recovery code" Foreground="{DynamicResource Brush.Text}" FontWeight="SemiBold" />
+                            <TextBlock Text="Create an offline recovery code so you can regain access if you ever forget your password."
+                                       Style="{StaticResource Text.Caption}" TextWrapping="Wrap" Margin="0,2,0,0" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                            <Button Content="Later" Command="{Binding DismissRecoveryPromptCommand}"
+                                    Style="{StaticResource Button.Secondary}" Margin="0,0,10,0" />
+                            <Button Content="Set up now" Command="{Binding SetUpRecoveryCommand}"
+                                    Style="{StaticResource Button.Primary}" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- ==================== DAILY OPERATIONS ==================== -->
+                <TextBlock Text="Daily operations" Style="{StaticResource Text.Heading}" Margin="2,0,0,4" />
+                <TextBlock Text="Everything you need to run the floor." Style="{StaticResource Text.Body}" Margin="2,0,0,14" />
+                <WrapPanel Margin="0,0,0,10">
+                    <!-- Tables -->
+                    <Button Style="{StaticResource Button.Tile}" Command="{Binding OpenTablesCommand}"
+                            Visibility="{Binding CanViewTables, Converter={StaticResource BoolToVisible}}">
+                        <StackPanel>
+                            <TextBlock Text="Tables" Foreground="{DynamicResource Brush.Text}" FontSize="15" FontWeight="SemiBold" />
+                            <TextBlock Text="Start and manage live table sessions." Style="{StaticResource Text.Caption}"
+                                       TextWrapping="Wrap" Margin="0,4,0,0" />
+                        </StackPanel>
+                    </Button>
+
+                    <!-- New Sale (live) -->
+                    <Button Style="{StaticResource Button.Tile}" Command="{Binding OpenNewSaleCommand}"
+                            Visibility="{Binding CanCreateSale, Converter={StaticResource BoolToVisible}}">
+                        <StackPanel>
+                            <TextBlock Text="New Sale" Foreground="{DynamicResource Brush.Text}" FontSize="15" FontWeight="SemiBold" />
+                            <TextBlock Text="Walk-in sales and table checkout." Style="{StaticResource Text.Caption}"
+                                       TextWrapping="Wrap" Margin="0,4,0,0" />
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Products (live) -->
+                    <Button Style="{StaticResource Button.Tile}" Command="{Binding OpenProductsCommand}"
+                            Visibility="{Binding CanViewProducts, Converter={StaticResource BoolToVisible}}">
+                        <StackPanel>
+                            <TextBlock Text="Products" Foreground="{DynamicResource Brush.Text}" FontSize="15" FontWeight="SemiBold" />
+                            <TextBlock Text="Food, drinks and retail items." Style="{StaticResource Text.Caption}"
+                                       TextWrapping="Wrap" Margin="0,4,0,0" />
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Inventory (live) -->
+                    <Button Style="{StaticResource Button.Tile}" Command="{Binding OpenInventoryCommand}"
+                            Visibility="{Binding CanViewInventory, Converter={StaticResource BoolToVisible}}">
+                        <StackPanel>
+                            <TextBlock Text="Inventory" Foreground="{DynamicResource Brush.Text}" FontSize="15" FontWeight="SemiBold" />
+                            <TextBlock Text="Stock levels and movements." Style="{StaticResource Text.Caption}"
+                                       TextWrapping="Wrap" Margin="0,4,0,0" />
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Session history -->
+                    <Button Style="{StaticResource Button.Tile}" Command="{Binding OpenSessionHistoryCommand}"
+                            Visibility="{Binding CanViewTables, Converter={StaticResource BoolToVisible}}">
+                        <StackPanel>
+                            <TextBlock Text="Session history" Foreground="{DynamicResource Brush.Text}" FontSize="15" FontWeight="SemiBold" />
+                            <TextBlock Text="Past and awaiting-checkout sessions." Style="{StaticResource Text.Caption}"
+                                       TextWrapping="Wrap" Margin="0,4,0,0" />
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Sales history (live) -->
+                    <Button Style="{StaticResource Button.Tile}" Command="{Binding OpenSalesHistoryCommand}"
+                            Visibility="{Binding CanViewSalesHistory, Converter={StaticResource BoolToVisible}}">
+                        <StackPanel>
+                            <TextBlock Text="Sales history" Foreground="{DynamicResource Brush.Text}" FontSize="15" FontWeight="SemiBold" />
+                            <TextBlock Text="Completed sales and receipts." Style="{StaticResource Text.Caption}"
+                                       TextWrapping="Wrap" Margin="0,4,0,0" />
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Bookings (live) -->
+                    <Button Style="{StaticResource Button.Tile}" Command="{Binding OpenBookingsCommand}"
+                            Visibility="{Binding CanViewBookings, Converter={StaticResource BoolToVisible}}">
+                        <StackPanel>
+                            <TextBlock Text="Bookings" Foreground="{DynamicResource Brush.Text}" FontSize="15" FontWeight="SemiBold" />
+                            <TextBlock Text="Reserve tables and start them on arrival." Style="{StaticResource Text.Caption}"
+                                       TextWrapping="Wrap" Margin="0,4,0,0" />
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Reports (live) -->
+                    <Button Style="{StaticResource Button.Tile}" Command="{Binding OpenReportsCommand}"
+                            Visibility="{Binding CanViewReports, Converter={StaticResource BoolToVisible}}">
+                        <StackPanel>
+                            <TextBlock Text="Reports" Foreground="{DynamicResource Brush.Text}" FontSize="15" FontWeight="SemiBold" />
+                            <TextBlock Text="Sales, tables, inventory, shifts and more." Style="{StaticResource Text.Caption}"
+                                       TextWrapping="Wrap" Margin="0,4,0,0" />
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Coming soon tiles -->
+                    <ItemsControl ItemsSource="{Binding ComingSoonModules}"
+                                  Visibility="{Binding HasComingSoonModules, Converter={StaticResource BoolToVisible}}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="{DynamicResource Brush.Card}" BorderBrush="{DynamicResource Brush.Border}"
+                                        BorderThickness="1" CornerRadius="14" Padding="18" Margin="0,0,14,14"
+                                        Width="232" Height="104" Opacity="0.7">
+                                    <StackPanel>
+                                        <Border Style="{StaticResource Pill}" HorizontalAlignment="Left" Margin="0,0,0,8">
+                                            <TextBlock Text="Coming soon" Foreground="{DynamicResource Brush.TextMuted}"
+                                                       FontSize="11" FontWeight="SemiBold" />
+                                        </Border>
+                                        <TextBlock Text="{Binding Name}" Foreground="{DynamicResource Brush.Text}"
+                                                   FontSize="15" FontWeight="SemiBold" />
+                                        <TextBlock Text="{Binding Description}" Style="{StaticResource Text.Caption}"
+                                                   TextWrapping="Wrap" Margin="0,2,0,0" />
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </WrapPanel>
+
+                <!-- ==================== UPCOMING BOOKINGS ==================== -->
+                <StackPanel Visibility="{Binding CanViewBookings, Converter={StaticResource BoolToVisible}}" Margin="0,22,0,0">
+                    <Grid Margin="2,0,0,10">
+                        <StackPanel>
+                            <TextBlock Text="Upcoming bookings" Style="{StaticResource Text.Heading}" />
+                            <TextBlock Text="The next five reservations." Style="{StaticResource Text.Caption}" Margin="0,2,0,0" />
+                        </StackPanel>
+                        <Button Content="View all" Command="{Binding OpenBookingsCommand}" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                Style="{StaticResource Button.Secondary}" />
+                    </Grid>
+                    <Border Style="{StaticResource Card}" Padding="20">
+                        <StackPanel>
+                            <TextBlock Text="No upcoming bookings." Style="{StaticResource Text.Body}"
+                                       Visibility="{Binding HasUpcomingBookings, Converter={StaticResource InverseBoolToVisible}}" />
+                            <ItemsControl ItemsSource="{Binding UpcomingBookings}"
+                                          Visibility="{Binding HasUpcomingBookings, Converter={StaticResource BoolToVisible}}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border BorderBrush="{DynamicResource Brush.Border}" BorderThickness="0,0,0,1" Padding="0,9">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel Grid.Column="0">
+                                                    <TextBlock Text="{Binding CustomerName}" Foreground="{DynamicResource Brush.Text}" FontWeight="SemiBold" />
+                                                    <TextBlock Foreground="{DynamicResource Brush.TextMuted}" FontSize="12">
+                                                        <Run Text="{Binding WhenText, Mode=OneWay}" /><Run Text=" · " /><Run Text="{Binding TableName, Mode=OneWay}" />
+                                                    </TextBlock>
+                                                </StackPanel>
+                                                <TextBlock Grid.Column="1" Text="{Binding StatusText}" Foreground="{DynamicResource Brush.TextMuted}"
+                                                           VerticalAlignment="Center" />
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- ==================== SHIFT ==================== -->
+                <TextBlock Text="Shift" Style="{StaticResource Text.Heading}" Margin="2,18,0,4" />
+
+                <!-- Shift status header -->
+                <StackPanel Orientation="Horizontal" Margin="0,4,0,14">
+                    <Ellipse Width="10" Height="10" VerticalAlignment="Center"
+                             Fill="{DynamicResource Brush.Success}"
+                             Visibility="{Binding HasOpenShift, Converter={StaticResource BoolToVisible}}" />
+                    <Ellipse Width="10" Height="10" VerticalAlignment="Center"
+                             Fill="{DynamicResource Brush.TextSubtle}"
+                             Visibility="{Binding HasOpenShift, Converter={StaticResource InverseBoolToVisible}}" />
+                    <TextBlock Text="{Binding ShiftStatusText}" Foreground="{DynamicResource Brush.Text}"
+                               FontWeight="SemiBold" VerticalAlignment="Center" Margin="10,0,0,0" />
+                </StackPanel>
+
+                <!-- Shift card -->
+                <Border Style="{StaticResource Card}" Padding="24">
+                    <StackPanel>
+                        <!-- No open shift state -->
+                        <StackPanel Visibility="{Binding HasOpenShift, Converter={StaticResource InverseBoolToVisible}}">
+                            <TextBlock Text="You have no open shift." Style="{StaticResource Text.Heading}" />
+                            <TextBlock Text="Open a shift to start recording cash for the day."
+                                       Style="{StaticResource Text.Body}" Margin="0,6,0,16" />
+                            <Button Content="Open Shift" Command="{Binding OpenShiftCommand}"
+                                    IsEnabled="{Binding CanOpenShift}"
+                                    Style="{StaticResource Button.Primary}" HorizontalAlignment="Left" />
+                        </StackPanel>
+
+                        <!-- Open shift state -->
+                        <StackPanel Visibility="{Binding HasOpenShift, Converter={StaticResource BoolToVisible}}">
+                            <Grid>
+                                <StackPanel>
+                                    <TextBlock Text="Current shift" Style="{StaticResource Text.Caption}" />
+                                    <TextBlock Text="{Binding OpenedText}" Style="{StaticResource Text.Body}" Margin="0,2,0,0" />
+                                </StackPanel>
+                            </Grid>
+
+                            <!-- Totals -->
+                            <Grid Margin="0,16,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Opening cash" Style="{StaticResource Text.Body}" Margin="0,3" />
+                                    <TextBlock Text="Cash In" Style="{StaticResource Text.Body}" Margin="0,3" />
+                                    <TextBlock Text="Cash Out" Style="{StaticResource Text.Body}" Margin="0,3" />
+                                    <TextBlock Text="Expenses" Style="{StaticResource Text.Body}" Margin="0,3" />
+                                    <TextBlock Text="Cash Drops" Style="{StaticResource Text.Body}" Margin="0,3" />
+                                    <TextBlock Text="Expected cash" Foreground="{DynamicResource Brush.Text}"
+                                               FontWeight="SemiBold" Margin="0,7,0,0" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" HorizontalAlignment="Right">
+                                    <TextBlock Text="{Binding OpeningCashText}" Foreground="{DynamicResource Brush.Text}" Margin="0,3" HorizontalAlignment="Right" />
+                                    <TextBlock Text="{Binding CashInText}" Foreground="{DynamicResource Brush.Text}" Margin="0,3" HorizontalAlignment="Right" />
+                                    <TextBlock Text="{Binding CashOutText}" Foreground="{DynamicResource Brush.Text}" Margin="0,3" HorizontalAlignment="Right" />
+                                    <TextBlock Text="{Binding ExpenseText}" Foreground="{DynamicResource Brush.Text}" Margin="0,3" HorizontalAlignment="Right" />
+                                    <TextBlock Text="{Binding DropText}" Foreground="{DynamicResource Brush.Text}" Margin="0,3" HorizontalAlignment="Right" />
+                                    <TextBlock Text="{Binding ExpectedCashText}" Foreground="{DynamicResource Brush.Accent}"
+                                               FontWeight="Bold" FontSize="16" Margin="0,7,0,0" HorizontalAlignment="Right" />
+                                </StackPanel>
+                            </Grid>
+
+                            <!-- Cash action buttons -->
+                            <WrapPanel Margin="0,18,0,0">
+                                <Button Content="Cash In" Command="{Binding CashInCommand}" IsEnabled="{Binding CanRecordCash}"
+                                        Style="{StaticResource Button.Secondary}" Margin="0,0,8,8" />
+                                <Button Content="Cash Out" Command="{Binding CashOutCommand}" IsEnabled="{Binding CanRecordCash}"
+                                        Style="{StaticResource Button.Secondary}" Margin="0,0,8,8" />
+                                <Button Content="Expense" Command="{Binding ExpenseCommand}" IsEnabled="{Binding CanRecordCash}"
+                                        Style="{StaticResource Button.Secondary}" Margin="0,0,8,8" />
+                                <Button Content="Cash Drop" Command="{Binding CashDropCommand}" IsEnabled="{Binding CanRecordCash}"
+                                        Style="{StaticResource Button.Secondary}" Margin="0,0,8,8" />
+                                <Button Content="Close Shift" Command="{Binding CloseShiftCommand}" IsEnabled="{Binding CanCloseShift}"
+                                        Style="{StaticResource Button.Primary}" Margin="0,0,0,8" />
+                            </WrapPanel>
+
+                            <!-- Movements list -->
+                            <TextBlock Text="Cash movements" Style="{StaticResource Text.Caption}" Margin="0,10,0,6" />
+                            <ItemsControl ItemsSource="{Binding CashMovements}">
+                                <ItemsControl.Template>
+                                    <ControlTemplate>
+                                        <StackPanel>
+                                            <ItemsPresenter />
+                                            <TextBlock Text="No cash movements yet."
+                                                       Style="{StaticResource Text.Caption}"
+                                                       Visibility="{Binding HasItems, RelativeSource={RelativeSource AncestorType=ItemsControl}, Converter={StaticResource InverseBoolToVisible}}" />
+                                        </StackPanel>
+                                    </ControlTemplate>
+                                </ItemsControl.Template>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border BorderBrush="{DynamicResource Brush.Border}" BorderThickness="0,0,0,1" Padding="0,8">
+                                            <Grid>
+                                                <StackPanel>
+                                                    <TextBlock Text="{Binding Type}" Foreground="{DynamicResource Brush.Text}" FontWeight="SemiBold" />
+                                                    <TextBlock Text="{Binding Reason}" Style="{StaticResource Text.Caption}" />
+                                                </StackPanel>
+                                                <TextBlock Text="{Binding Amount}" Foreground="{DynamicResource Brush.Text}"
+                                                           HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="SemiBold" />
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- ==================== MANAGEMENT (permission-gated) ==================== -->
+                <StackPanel Visibility="{Binding CanAccessManagement, Converter={StaticResource BoolToVisible}}" Margin="0,26,0,0">
+                    <TextBlock Text="Management" Style="{StaticResource Text.Heading}" Margin="2,0,0,4" />
+                    <TextBlock Text="Configuration and staff — available to you based on your role."
+                               Style="{StaticResource Text.Body}" Margin="2,0,0,14" />
+                    <WrapPanel>
+                        <Button Style="{StaticResource Button.Tile}" Command="{Binding OpenManageTablesCommand}"
+                                Visibility="{Binding CanManageTables, Converter={StaticResource BoolToVisible}}">
+                            <StackPanel>
+                                <TextBlock Text="Manage tables" Foreground="{DynamicResource Brush.Text}" FontSize="15" FontWeight="SemiBold" />
+                                <TextBlock Text="Add, rename, re-rate and activate tables." Style="{StaticResource Text.Caption}"
+                                           TextWrapping="Wrap" Margin="0,4,0,0" />
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource Button.Tile}" Command="{Binding OpenStaffCommand}"
+                                Visibility="{Binding CanManageStaff, Converter={StaticResource BoolToVisible}}">
+                            <StackPanel>
+                                <TextBlock Text="Staff" Foreground="{DynamicResource Brush.Text}" FontSize="15" FontWeight="SemiBold" />
+                                <TextBlock Text="Accounts, roles and login credentials." Style="{StaticResource Text.Caption}"
+                                           TextWrapping="Wrap" Margin="0,4,0,0" />
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource Button.Tile}" Command="{Binding OpenSettingsCommand}"
+                                Visibility="{Binding CanManageSettings, Converter={StaticResource BoolToVisible}}">
+                            <StackPanel>
+                                <TextBlock Text="Settings" Foreground="{DynamicResource Brush.Text}" FontSize="15" FontWeight="SemiBold" />
+                                <TextBlock Text="Club profile, tax/service, backups and more." Style="{StaticResource Text.Caption}"
+                                           TextWrapping="Wrap" Margin="0,4,0,0" />
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource Button.Tile}" Command="{Binding OpenBackupCommand}"
+                                Visibility="{Binding CanCreateBackup, Converter={StaticResource BoolToVisible}}">
+                            <StackPanel>
+                                <TextBlock Text="Backup &amp; restore" Foreground="{DynamicResource Brush.Text}" FontSize="15" FontWeight="SemiBold" />
+                                <TextBlock Text="Create, validate and restore backups." Style="{StaticResource Text.Caption}"
+                                           TextWrapping="Wrap" Margin="0,4,0,0" />
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource Button.Tile}" Command="{Binding OpenAdminCommand}"
+                                Visibility="{Binding CanRunAdmin, Converter={StaticResource BoolToVisible}}">
+                            <StackPanel>
+                                <TextBlock Text="Database &amp; diagnostics" Foreground="{DynamicResource Brush.Text}" FontSize="15" FontWeight="SemiBold" />
+                                <TextBlock Text="Health checks, folders and diagnostics." Style="{StaticResource Text.Caption}"
+                                           TextWrapping="Wrap" Margin="0,4,0,0" />
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource Button.Tile}" Command="{Binding OpenAuditCommand}"
+                                Visibility="{Binding CanViewAudit, Converter={StaticResource BoolToVisible}}">
+                            <StackPanel>
+                                <TextBlock Text="Audit log" Foreground="{DynamicResource Brush.Text}" FontSize="15" FontWeight="SemiBold" />
+                                <TextBlock Text="Filter and export the activity log." Style="{StaticResource Text.Caption}"
+                                           TextWrapping="Wrap" Margin="0,4,0,0" />
+                            </StackPanel>
+                        </Button>
+                    </WrapPanel>
+                </StackPanel>
+
+                <!-- ==================== ADVANCED (technical detail) ==================== -->
+                <StackPanel Visibility="{Binding IsAdvancedMode, Converter={StaticResource BoolToVisible}}" Margin="0,20,0,0">
+                    <TextBlock Text="Advanced" Style="{StaticResource Text.Heading}" Margin="2,0,0,4" />
+                    <TextBlock Text="Club settings summary and the activity log." Style="{StaticResource Text.Body}" Margin="2,0,0,14" />
+
+                    <Border Style="{StaticResource Card}" Padding="20" Margin="0,0,0,14">
+                        <StackPanel>
+                            <TextBlock Text="Club settings" Foreground="{DynamicResource Brush.Text}" FontWeight="SemiBold" />
+                            <TextBlock Text="{Binding SettingsSummary}" Style="{StaticResource Text.Body}" Margin="0,6,0,0" />
+                            <TextBlock Text="{Binding BackupSummary}" Style="{StaticResource Text.Caption}" Margin="0,6,0,0" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource Card}" Padding="20"
+                            Visibility="{Binding CanViewAudit, Converter={StaticResource BoolToVisible}}">
+                        <StackPanel>
+                            <TextBlock Text="Recent activity (audit log)" Foreground="{DynamicResource Brush.Text}" FontWeight="SemiBold" Margin="0,0,0,10" />
+                            <ItemsControl ItemsSource="{Binding AuditEvents}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border BorderBrush="{DynamicResource Brush.Border}" BorderThickness="0,0,0,1" Padding="0,7">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="150" />
+                                                    <ColumnDefinition Width="150" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="{Binding Utc, StringFormat='{}{0:dd MMM HH:mm}'}"
+                                                           Style="{StaticResource Text.Caption}" />
+                                                <TextBlock Grid.Column="1" Text="{Binding Action}"
+                                                           Foreground="{DynamicResource Brush.Text}" />
+                                                <TextBlock Grid.Column="2" Text="{Binding Details}"
+                                                           Style="{StaticResource Text.Caption}" TextWrapping="Wrap" />
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>
